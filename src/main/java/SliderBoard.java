@@ -1,4 +1,5 @@
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * COMP30024 Artificial Intelligence - Project A
@@ -9,50 +10,77 @@ public class SliderBoard {
 
     public int dimension;
 
-    // The Board contains a list of all its cells
-    public ArrayList<SliderBoardCell> boardCells;
-
     // It also contains all pieces in play during game-play
-    public ArrayList<SliderBoardPiece> pieces;
+    public HashMap<Position, SliderBoardPiece> hashPieces;
 
 
     public SliderBoard(int dimension) {
         this.dimension = dimension;
 
-        boardCells = new ArrayList<>();
-        pieces = new ArrayList<>();
+        hashPieces = new HashMap<>();
     }
 
 
     /**
      * Find the particular piece based on its location on the board
-     * @param row
-     * @param column
+     * @param i
+     * @param j
      * @return
      */
-    public SliderBoardPiece findPiece(int row, int column) throws EmptyCellException {
+    public SliderBoardPiece findPiece(int i, int j) {
 
-        for(SliderBoardPiece piece : pieces){
-            if(piece.isPosition(row, column)){
-                return piece;
-            }
+        SliderBoardPiece sbp = hashPieces.get(new Position(i, j));
+
+        // We get our piece in O(1) time complexity.
+        if(sbp == null){
+            // If there is no piece found, then this cell is empty
+            return null;
         }
 
-        // There should never be an empty cell.
-        throw new EmptyCellException(row, column);
+        return sbp;
     }
-
 
     /**
      * Generic position class for use on our Board
      */
     public static class Position {
-        public final int row;
-        public final int column;
+        public final int i;
+        public final int j;
 
-        public Position(int row, int column){
-            this.row = row;
-            this.column = column;
+
+        public Position(int i, int j){
+            this.i = i;
+            this.j = j;
+        }
+
+        // Helper Functions
+        public static Position getPositionAbove(int i, int j){ return new Position(i, j+1); }
+        public static Position getPositionBelow(int i, int j){ return new Position(i, j-1); }
+        public static Position getPositionRight(int i, int j){ return new Position(i+1, j); }
+        public static Position getPositionLeft(int i, int j){ return new Position(i-1, j); }
+
+
+        @Override
+        public boolean equals(Object obj) {
+            if(obj == this) return true;
+
+            if(!(obj instanceof Position)){
+                return false;
+            }
+
+            Position pos = (Position) obj;
+
+            return i == pos.i && j == pos.j;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(i, j);
+        }
+
+        @Override
+        public String toString() {
+            return "(i, j) : (" + i + ", " + j + ")";
         }
     }
 

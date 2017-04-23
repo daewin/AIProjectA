@@ -15,7 +15,7 @@ public interface PieceMovement {
 
         By first checking if we are allowed to move our piece in a certain direction, we can be assured when
         we actually move the piece that:
-            (1) The cell is "empty" (using the '+' notation)
+            (1) The cell is "empty"
             (2) We are not moving past any boundaries that we should not cross
         Checking if we have successfully crossed the boundary should be handled later, along with the points awarded etc.
     */
@@ -25,88 +25,74 @@ public interface PieceMovement {
      * Check if we can move our piece up
      * @param board
      * @param piece
-     * @return
-     * @throws Exception
+     * @return if we can move up
      */
-    static boolean canMoveUp(SliderBoard board, SliderBoardPiece piece) throws EmptyCellException {
+    static boolean canMoveUp(SliderBoard board, SliderBoardPiece piece) {
 
-        String upPieceType = piece.type;
+        if(isInvalidPiece(piece)){
+            throw new InvalidMoveException(piece);
+        }
 
-        // First we get the piece above. Note: even if the return value is a null, we will allow the respective
-        // "H" or "V" logic control statements to decide how to proceed as null is allowed in certain cases.
+        // First we get the piece above our current piece
         SliderBoardPiece pieceAbove = getPieceAbove(board, piece);
 
-        if(upPieceType.equals("H")){
-
-            // If it's null, then the boundary has been reached;
-            if(pieceAbove == null){
+        if(pieceAbove.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
+            // The boundary has been reached;
+            if(piece.type.equals(SliderBoardPiece.PieceType.H)){
                 // Since 'H' cannot move past the top boundary, we return false
                 return false;
-            }
 
-            // Now we check if the piece above is considered blocked. If it is, we return false
-            if(isBlocked(board, pieceAbove.position)){
-                return false;
-            }
-
-            // It's safe to move up
-            return true;
-
-        } else if (upPieceType.equals("V")){
-
-            // If it's null, then the boundary has been reached;
-            if(pieceAbove == null){
+            } else {
                 // Since 'V' can move past the top boundary, we return true
                 return true;
             }
+        }
 
-            // Now we check if the piece above is considered blocked. If it is, we return false
-            if(isBlocked(board, pieceAbove.position)){
-                return false;
-            }
-
-            // It's safe to move up
-            return true;
-
-
-
-        } else {
-            // We should not be moving other "pieces"
+        // Now we check if the piece above is considered blocked. If it is, we return false
+        if(isBlocked(pieceAbove)){
             return false;
         }
+
+        // It's safe to move up for both cases
+        return true;
     }
 
     /**
      * Check if we can move our piece down
      * @param board
      * @param piece
-     * @return
-     * @throws Exception
+     * @return if we can move down
      */
-    static boolean canMoveDown(SliderBoard board, SliderBoardPiece piece) throws EmptyCellException {
+    static boolean canMoveDown(SliderBoard board, SliderBoardPiece piece) {
 
-        String downPieceType = piece.type;
+        if(isInvalidPiece(piece)){
+            throw new InvalidMoveException(piece);
+        }
 
         // First we get the piece below
         SliderBoardPiece pieceBelow = getPieceBelow(board, piece);
 
-        if(downPieceType.equals("H")){
-
-            // If it's null, then the boundary has been reached;
-            if(pieceBelow == null){
+        if(pieceBelow.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
+            // The boundary has been reached
+            if(piece.type.equals(SliderBoardPiece.PieceType.H)){
                 // Since 'H' cannot move past the bottom boundary, we return false
                 return false;
+            } else {
+                // Since 'V' cannot move past the bottom boundary, we return true
+                return false;
             }
+        }
 
+        if(piece.type.equals(SliderBoardPiece.PieceType.H)){
             // Now we check if the piece below is considered blocked. If it is, we return false
-            if(isBlocked(board, pieceBelow.position)){
+            if(isBlocked(pieceBelow)){
                 return false;
             }
 
             // It's safe to move down
             return true;
 
-        } else if (downPieceType.equals("V")){
+        } else if (piece.type.equals(SliderBoardPiece.PieceType.V)){
             // 'V' is not allowed to move down, return false
             return false;
 
@@ -121,30 +107,34 @@ public interface PieceMovement {
      * Check if we can move our piece to the left
      * @param board
      * @param piece
-     * @return
-     * @throws Exception
+     * @return if we can move to the left
      */
-    static boolean canMoveLeft(SliderBoard board, SliderBoardPiece piece) throws EmptyCellException {
+    static boolean canMoveLeft(SliderBoard board, SliderBoardPiece piece) {
 
-        String leftPieceType = piece.type;
+        if(isInvalidPiece(piece)){
+            throw new InvalidMoveException(piece);
+        }
 
         // First we get the piece to the left
         SliderBoardPiece pieceLeft = getPieceLeft(board, piece);
 
-        if(leftPieceType.equals("H")){
-            // 'H' is not allowed to move to the left, return false
-            return false;
-
-        } else if (leftPieceType.equals("V")){
-
-            // If it's null, then the boundary has been reached;
-            if(pieceLeft == null){
+        if(pieceLeft.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
+            if(piece.type.equals(SliderBoardPiece.PieceType.H)){
+                // Since 'H' cannot move past the left boundary, we return false
+                return false;
+            } else {
                 // Since 'V' cannot move past the left boundary, we return false
                 return false;
             }
+        }
 
-            // Now we check if the piece to the left is considered blocked. If it is, we return false
-            if(isBlocked(board, pieceLeft.position)){
+        if(piece.type.equals(SliderBoardPiece.PieceType.H)){
+            // 'H' is not allowed to move to the left, return false
+            return false;
+
+        } else if (piece.type.equals(SliderBoardPiece.PieceType.V)){
+            // We check if the piece to the left is considered blocked. If it is, we return false
+            if(isBlocked(pieceLeft)){
                 return false;
             }
 
@@ -165,67 +155,58 @@ public interface PieceMovement {
      * @return
      * @throws Exception
      */
-    static boolean canMoveRight(SliderBoard board, SliderBoardPiece piece) throws EmptyCellException {
+    static boolean canMoveRight(SliderBoard board, SliderBoardPiece piece) {
 
-        String rightPieceType = piece.type;
+        if(isInvalidPiece(piece)){
+            throw new InvalidMoveException(piece);
+        }
 
         // First we get the piece to the right
         SliderBoardPiece pieceRight = getPieceRight(board, piece);
 
-        if(rightPieceType.equals("H")){
-            // If it's null, then the boundary has been reached;
-            if(pieceRight == null){
+        if(pieceRight.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
+            // The boundary has been reached;
+            if(piece.type.equals(SliderBoardPiece.PieceType.H)){
                 // Since 'H' can move past the right boundary, we return true
                 return true;
-            }
-
-            // Now we check if the piece to the right is considered blocked. If it is, we return false
-            if(isBlocked(board, pieceRight.position)){
-                return false;
-            }
-
-            // It's safe to move to the right
-            return true;
-
-        } else if (rightPieceType.equals("V")){
-
-            // If it's null, then the boundary has been reached;
-            if(pieceRight == null){
+            } else {
                 // Since 'V' cannot move past the right boundary, we return false
                 return false;
             }
+        }
 
-            // Now we check if the piece to the right is considered blocked. If it is, we return false
-            if(isBlocked(board, pieceRight.position)){
-                return false;
-            }
-
-            // It's safe to move to the right
-            return true;
-
-        } else {
-            // We should not be moving other "pieces"
+        // Now we check if the piece to the right is considered blocked. If it is, we return false
+        if(isBlocked(pieceRight)){
             return false;
         }
+
+        // It's safe to move to the right for both cases
+        return true;
     }
 
     /**
      * Check if the particular position is blocked, i.e. anything other than '+'
-     * @param board
-     * @param position
+     * @param piece
      * @return
-     * @throws Exception
      */
-    static boolean isBlocked(SliderBoard board, SliderBoard.Position position) throws EmptyCellException {
+    static boolean isBlocked(SliderBoardPiece piece) {
 
-        String pieceType = board.findPiece(position.row, position.column).type;
-
-        if(!pieceType.equals("+")){
-            // If it's any case other than an empty cell
-            return true;
+        // If there is no piece found, then this cell is empty (i.e. not blocked)
+        if(piece == null){
+            return false;
         }
 
-        return false;
+        return true;
+    }
+
+    /**
+     * Checks if the piece is valid for a move (i.e. H or V)
+     * @param piece
+     * @return
+     */
+    static boolean isInvalidPiece(SliderBoardPiece piece){
+        return !(piece.type.equals(SliderBoardPiece.PieceType.V) ||
+                piece.type.equals(SliderBoardPiece.PieceType.H));
     }
 
 
@@ -233,37 +214,36 @@ public interface PieceMovement {
      * Return the "piece" above our parameter piece
      * @param piece
      */
-    static SliderBoardPiece getPieceAbove(SliderBoard board, SliderBoardPiece piece) throws EmptyCellException {
+    static SliderBoardPiece getPieceAbove(SliderBoard board, SliderBoardPiece piece) {
 
         // Get the position above
-        int row = piece.position.row + 1;
-        int column = piece.position.column;
+        int i = piece.position.i;
+        int j = piece.position.j + 1;
 
-        if(row >= board.dimension){
+        if(j >= board.dimension){
             // Check that we have not exceeded the boards' boundaries
-            return null;
+            return new BoundarySliderBoardPiece(i, j);
         }
 
-        // Find and return the piece at that position. If there is no such piece, an EmptyCellException is thrown,
-        // and propagated up the stack till main, where it exits.
-        return board.findPiece(row, column);
+        // Find and return the piece at that position. If there is no such piece, a null is returned
+        return board.findPiece(i, j);
     }
 
     /**
      * Return the "piece" below our parameter piece
      * @param piece
      */
-    static SliderBoardPiece getPieceBelow(SliderBoard board, SliderBoardPiece piece) throws EmptyCellException {
+    static SliderBoardPiece getPieceBelow(SliderBoard board, SliderBoardPiece piece) {
 
         // Get the position below
-        int row = piece.position.row - 1;
-        int column = piece.position.column;
+        int i = piece.position.i;
+        int j = piece.position.j - 1;
 
-        if(row < 0){
-            return null;
+        if(j < 0){
+            return new BoundarySliderBoardPiece(i, j);
         }
 
-        return board.findPiece(row, column);
+        return board.findPiece(i, j);
     }
 
 
@@ -271,17 +251,17 @@ public interface PieceMovement {
      * Return the "piece" to the right of our parameter piece
      * @param piece
      */
-    static SliderBoardPiece getPieceRight(SliderBoard board, SliderBoardPiece piece) throws EmptyCellException {
+    static SliderBoardPiece getPieceRight(SliderBoard board, SliderBoardPiece piece) {
 
         // Get the position to the right
-        int row = piece.position.row;
-        int column = piece.position.column + 1;
+        int i = piece.position.i + 1;
+        int j = piece.position.j;
 
-        if(column >= board.dimension){
-            return null;
+        if(i >= board.dimension){
+            return new BoundarySliderBoardPiece(i, j);
         }
 
-        return board.findPiece(row, column);
+        return board.findPiece(i, j);
     }
 
 
@@ -289,17 +269,17 @@ public interface PieceMovement {
      * Return the "piece" to the left of our parameter piece
      * @param piece
      */
-    static SliderBoardPiece getPieceLeft(SliderBoard board, SliderBoardPiece piece) throws EmptyCellException {
+    static SliderBoardPiece getPieceLeft(SliderBoard board, SliderBoardPiece piece) {
 
         // Get the position to the left
-        int row = piece.position.row;
-        int column = piece.position.column - 1;
+        int i = piece.position.i - 1;
+        int j = piece.position.j;
 
-        if(column < 0){
-            return null;
+        if(i < 0){
+            return new BoundarySliderBoardPiece(i, j);
         }
 
-        return board.findPiece(row, column);
+        return board.findPiece(i, j);
     }
 
 }

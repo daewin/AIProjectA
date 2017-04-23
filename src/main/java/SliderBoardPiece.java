@@ -5,29 +5,37 @@
  */
 public class SliderBoardPiece {
 
-    public String type;
+    public enum PieceType { H, V, B, BOUNDARY }
+
+    public PieceType type;
     public SliderBoard.Position position;
 
-    public SliderBoardPiece(String type, int row, int column){
-        this.type = type;
-        this.position = new SliderBoard.Position(row, column);
+    public SliderBoardPiece(String t, int i, int j){
+
+        switch(t){
+            case "H":
+                type = PieceType.H;
+                break;
+
+            case "V":
+                type = PieceType.V;
+                break;
+
+            case "B":
+                type = PieceType.B;
+                break;
+        }
+
+        this.position = new SliderBoard.Position(i, j);
     }
 
-    /**
-     * Check if the position parameters are the same as our position
-     * @param row
-     * @param column
-     * @return
-     */
-    public boolean isPosition(int row, int column) {
-        if (row == position.row && column == position.column) {
-            return true;
-        }
-        return false;
+    public SliderBoardPiece(int i, int j){
+        this.position = new SliderBoard.Position(i, j);
     }
+
 
     @Override
     public String toString() {
-        return "" + type;
+        return type.toString();
     }
 }

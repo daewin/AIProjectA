@@ -1,56 +1,29 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 
 /**
  * COMP30024 Artificial Intelligence - Project A
  * By:              Daewin SV Lingam (dsv)
- * Last modified:   07/04/2017
+ * Last modified:   21/04/2017
  */
 public class World {
 
-    public static void main(String args[]) {
+    public static void main(String args[]){
+        AIPlayer ai = new AIPlayer();
 
-        // An "iterable" list to work on
-        List<String> iterable = new ArrayList<>();
-
-        // Read from redirection, and also use a space-delimiter (with 0 or more spaces handled)
-        Scanner inputScanner = new Scanner(System.in).useDelimiter("\\s*");
-
-        while(inputScanner.hasNext()){
-            iterable.add(inputScanner.next());
-        }
-
-        // Based on the format specified in the specs, the first element is the boards' dimension.
-        int dimension = Integer.parseInt(iterable.remove(0));
-
-        // Set up the bare-bones board
-        SliderBoard board = new SliderBoard(dimension);
-
-        // Prepare the List to conform to the input format. This modifies the list in-place.
-        prepareList(iterable, dimension);
-
-        initializeBoard(board, dimension, iterable);
-
-        // Prepare game
-        Game game = new Game(board);
-
-        // Let's see our results
-        System.out.println("numLegalHMoves: " + game.countLegalMoves("H"));
-        System.out.println("numLegalVMoves: " + game.countLegalMoves("V"));
+        ai.init(6, "H + + + + + + H B + + + H + + + + + H + V B V + + + + + H + + V + + V V ", 'H');
     }
-
 
     /**
      * Prepare the List to conform to the input format. This modifies the list in-place.
-     * The idea here is to reverse the rows, so that (0, column) will now be at the front of the list,
-     * instead of (dimension-1, column).
+     * The idea here is to reverse the rows, so that (i, 0) will now be at the front of the list,
+     * instead of (i, dimension-1).
      * @param list      Initial List read in
      * @param dimension Dimension of the board
      */
-    private static void prepareList(List<String> list, int dimension) {
+    public static void prepareList(List<String> list, int dimension) {
         int pointer = 0, count = 0;
         List<List<String>> lists = new ArrayList<>();
 
@@ -91,18 +64,25 @@ public class World {
      * @param board     Board
      * @param dimension Dimension of the board
      */
-    private static void initializeBoard(SliderBoard board, int dimension, List<String> iterable) {
-        for (int row = 0; row < dimension; row++) {
-            for (int column = 0; column < dimension; column++) {
+    public static void initializeBoard(List<String> iterable, int dimension, SliderBoard board) {
+        for (int j = 0; j < dimension; j++) {
+            for (int i = 0; i < dimension; i++) {
 
-                SliderBoardCell cell = new SliderBoardCell(row, column);
-                SliderBoardPiece piece = new SliderBoardPiece(iterable.remove(0), row, column);
+                String potentialPiece = iterable.remove(0);
 
-                board.boardCells.add(cell);
-                board.pieces.add(piece);
+                if(potentialPiece.equals("+")){
+                    // For better search performance, we refrain from adding empty positions as pieces
+                    continue;
+                }
+                SliderBoardPiece piece = new SliderBoardPiece(potentialPiece, i, j);
+
+                board.hashPieces.put(piece.position, piece);
             }
         }
     }
+
+
+
 
 
     /**
@@ -110,14 +90,16 @@ public class World {
      * @param board     Board
      * @param dimension Dimension of the board
      */
-    private static void printBoard(SliderBoard board, int dimension) throws EmptyCellException {
-        for (int row = dimension - 1; row >= 0; row--) {
-            for (int column = 0; column < dimension; column++) {
+    public static void printBoard(SliderBoard board, int dimension) {
+        for (int j = dimension - 1; j >= 0; j--) {
+            for (int i = 0; i < dimension; i++) {
                 // Find for the piece at this location
-                SliderBoardPiece piece = board.findPiece(row, column);
+                SliderBoardPiece piece = board.findPiece(i, j);
 
                 if(piece != null){
                     System.out.print(piece + " ");
+                } else {
+                    System.out.print("+ ");
                 }
 
             }
