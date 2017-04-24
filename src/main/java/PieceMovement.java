@@ -27,7 +27,7 @@ public interface PieceMovement {
      * @param piece
      * @return if we can move up
      */
-    static boolean canMoveUp(SliderBoard board, SliderBoardPiece piece) {
+    static boolean canMoveUp(SliderBoard board, SliderBoardPiece piece) throws InvalidMoveException {
 
         if(isInvalidPiece(piece)){
             throw new InvalidMoveException(piece);
@@ -63,7 +63,7 @@ public interface PieceMovement {
      * @param piece
      * @return if we can move down
      */
-    static boolean canMoveDown(SliderBoard board, SliderBoardPiece piece) {
+    static boolean canMoveDown(SliderBoard board, SliderBoardPiece piece) throws InvalidMoveException {
 
         if(isInvalidPiece(piece)){
             throw new InvalidMoveException(piece);
@@ -109,7 +109,7 @@ public interface PieceMovement {
      * @param piece
      * @return if we can move to the left
      */
-    static boolean canMoveLeft(SliderBoard board, SliderBoardPiece piece) {
+    static boolean canMoveLeft(SliderBoard board, SliderBoardPiece piece) throws InvalidMoveException {
 
         if(isInvalidPiece(piece)){
             throw new InvalidMoveException(piece);
@@ -155,7 +155,7 @@ public interface PieceMovement {
      * @return
      * @throws Exception
      */
-    static boolean canMoveRight(SliderBoard board, SliderBoardPiece piece) {
+    static boolean canMoveRight(SliderBoard board, SliderBoardPiece piece) throws InvalidMoveException {
 
         if(isInvalidPiece(piece)){
             throw new InvalidMoveException(piece);

@@ -44,17 +44,23 @@ public class AIPlayer implements SliderPlayer, PieceMovement {
 
         World.printBoard(aiBoard, dimension);
 
+        System.out.println("Number of pieces: " + aiBoard.hashPieces.size());
+
         // Lets move a piece
         Move m = new Move(5, 0, Move.Direction.RIGHT);
 
         update(m);
 
+        System.out.println();
+        System.out.println("New Move: " + m);
         System.out.println("New Board:");
         World.printBoard(aiBoard, dimension);
+
+        System.out.println("Number of pieces: " + aiBoard.hashPieces.size());
     }
 
     @Override
-    public void update(Move move) {
+    public void update(Move move) throws InvalidMoveException {
         if(move == null){
             // Do Nothing?
             return;
@@ -62,77 +68,50 @@ public class AIPlayer implements SliderPlayer, PieceMovement {
 
         SliderBoardPiece currentPiece = aiBoard.findPiece(move.i, move.j);
         SliderBoardPiece futurePiece;
-        SliderBoard.Position futurePosition;
 
         if(currentPiece == null){
             // Moving a piece that doesn't exist
             return;
         }
 
-        // Regardless if the future position is empty, we'll have a position to work with
+        // We check if we can move in the intended direction. There are only two cases possible:
+        // Either the future position is empty, or it is past the boundary where allowed as stated
+        // in the rules of the game for that particular piece type.
         switch(move.d){
             case UP:
-                if(PieceMovement.canMoveUp(aiBoard, currentPiece)){
+                if(!PieceMovement.canMoveUp(aiBoard, currentPiece)){
 
-                    futurePiece = PieceMovement.getPieceAbove(aiBoard, currentPiece);
-
-                    if(futurePiece == null){
-                        futurePosition = SliderBoard.Position.getPositionAbove(move.i, move.j);
-                    } else {
-                        futurePosition = futurePiece.position;
-                    }
+                    throw new InvalidMoveException(currentPiece);
 
                 } else {
-                    // Illegal move
-                    return;
+                    futurePiece = PieceMovement.getPieceAbove(aiBoard, currentPiece);
                 }
                 break;
 
             case DOWN:
-                if(PieceMovement.canMoveDown(aiBoard, currentPiece)){
+                if(!PieceMovement.canMoveDown(aiBoard, currentPiece)){
 
-                    futurePiece = PieceMovement.getPieceBelow(aiBoard, currentPiece);
-
-                    if(futurePiece == null){
-                        futurePosition = SliderBoard.Position.getPositionBelow(move.i, move.j);
-                    } else {
-                        futurePosition = futurePiece.position;
-                    }
+                    throw new InvalidMoveException(currentPiece);
                 } else {
-                    // Illegal move
-                    return;
+                    futurePiece = PieceMovement.getPieceBelow(aiBoard, currentPiece);
                 }
                 break;
 
             case LEFT:
-                if(PieceMovement.canMoveLeft(aiBoard, currentPiece)){
+                if(!PieceMovement.canMoveLeft(aiBoard, currentPiece)){
 
-                    futurePiece = PieceMovement.getPieceLeft(aiBoard, currentPiece);
-
-                    if(futurePiece == null){
-                        futurePosition = SliderBoard.Position.getPositionLeft(move.i, move.j);
-                    } else {
-                        futurePosition = futurePiece.position;
-                    }
+                    throw new InvalidMoveException(currentPiece);
                 } else {
-                    // Illegal move
-                    return;
+                    futurePiece = PieceMovement.getPieceLeft(aiBoard, currentPiece);
                 }
                 break;
 
             case RIGHT:
-                if(PieceMovement.canMoveRight(aiBoard, currentPiece)){
+                if(!PieceMovement.canMoveRight(aiBoard, currentPiece)){
 
-                    futurePiece = PieceMovement.getPieceRight(aiBoard, currentPiece);
-
-                    if(futurePiece == null){
-                        futurePosition = SliderBoard.Position.getPositionRight(move.i, move.j);
-                    } else {
-                        futurePosition = futurePiece.position;
-                    }
+                    throw new InvalidMoveException(currentPiece);
                 } else {
-                    // Illegal move
-                    return;
+                    futurePiece = PieceMovement.getPieceRight(aiBoard, currentPiece);
                 }
                 break;
 
@@ -140,35 +119,17 @@ public class AIPlayer implements SliderPlayer, PieceMovement {
                 return;
         }
 
-        // First we check if a key at our desired future position exists.
-        if(aiBoard.hashPieces.containsKey(futurePosition)){
+        // We check if the futurePiece is past the boundary
+        if(futurePiece.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
+            // TODO: Do our necessary score keeping here
 
-            // Replace the appropriate future piece with the current piece. The Replace method in the
-            // HashMap replaces the value for the given key and oldValue
-            if(!aiBoard.hashPieces.
-                    replace(futurePiece.position, futurePiece, currentPiece)){
-
-                System.out.println("Error: The pieces don't match up!");
-                return;
-            }
         } else {
-
-            // We check if the futurePiece is past the boundary
-            if(futurePiece.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
-                // TODO: Do our necessary score keeping here
-
-            } else {
-                //If it does not, the cell is empty, so we create a new key-value pair.
-                aiBoard.hashPieces.put(futurePosition, currentPiece);
-            }
+            //If it does not, the cell is empty, so we create a new key-value pair.
+            aiBoard.hashPieces.put(futurePiece.position, currentPiece);
         }
 
         // Now we remove the old "current" piece from the HashMap
-        if(!aiBoard.hashPieces.
-                remove(currentPiece.position, currentPiece)){
-            System.out.println("Error: The pieces don't match up!");
-            return;
-        }
+        aiBoard.hashPieces.remove(currentPiece.position, currentPiece);
 
     }
 

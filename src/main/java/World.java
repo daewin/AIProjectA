@@ -13,7 +13,7 @@ public class World {
     public static void main(String args[]){
         AIPlayer ai = new AIPlayer();
 
-        ai.init(6, "H + + + + + + H B + + + H + + + + + H + V B V + + + + + H + + V + + V V ", 'H');
+        ai.init(6, "H + + + + + + H B + + + H + + + + + H + V B V + + + + + H + + V + + V H ", 'H');
     }
 
     /**
