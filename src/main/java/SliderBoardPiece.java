@@ -10,29 +10,34 @@ public class SliderBoardPiece {
     public PieceType type;
     public SliderBoard.Position position;
 
-    public SliderBoardPiece(String t, int i, int j){
+    public SliderBoardPiece(char t, int i, int j){
 
         switch(t){
-            case "H":
+            case 'H':
                 type = PieceType.H;
                 break;
 
-            case "V":
+            case 'V':
                 type = PieceType.V;
                 break;
 
-            case "B":
+            case 'B':
                 type = PieceType.B;
                 break;
         }
 
         this.position = new SliderBoard.Position(i, j);
     }
+    
+    public SliderBoardPiece(SliderBoard.Position position){ this.position = position; }
 
-    public SliderBoardPiece(int i, int j){
-        this.position = new SliderBoard.Position(i, j);
+    /**
+     * Updates the position when moving
+     * @param position
+     */
+    public void setPosition(SliderBoard.Position position) {
+        this.position = position;
     }
-
 
     @Override
     public String toString() {

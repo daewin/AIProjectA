@@ -1,53 +1,37 @@
 import aiproj.slider.Move;
 import aiproj.slider.SliderPlayer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
 /**
  * Created by daewin on 0021, April 21.
  */
 public class AIPlayer implements SliderPlayer, PieceMovement {
 
-    private int aiDimension;
+    // Instance variables for our agent
     private SliderBoard aiBoard;
     private char aiPlayerType;
 
-
+    /**
+     *
+     * @param dimension The width and height of the board in cells
+     * @param board A string representation of the initial state of the board,
+     * as described in the part B specification
+     * @param player 'H' or 'V', corresponding to which pieces the player will
+     */
     @Override
     public void init(int dimension, String board, char player) {
-
-        // An "iterable" list to work on
-        List<String> iterable = new ArrayList<>();
-
-        // Read from String, and also use a space-delimiter (with 0 or more spaces handled)
-        Scanner inputScanner = new Scanner(board).useDelimiter("\\s*");
-
-        while(inputScanner.hasNext()){
-            iterable.add(inputScanner.next());
-        }
-
-        // Set the boards dimensions
-        aiDimension = dimension;
 
         // Set our players type
         aiPlayerType = player;
 
-        // Set up the bare-bones board
-        aiBoard = new SliderBoard(dimension);
-
-        // Prepare the List to conform to the input format. This modifies the list in-place.
-        World.prepareList(iterable, aiDimension);
-
-        World.initializeBoard(iterable, aiDimension, aiBoard);
+        // Create and initialize a new board
+        aiBoard = new SliderBoard(dimension, board);
 
         World.printBoard(aiBoard, dimension);
 
         System.out.println("Number of pieces: " + aiBoard.hashPieces.size());
 
         // Lets move a piece
-        Move m = new Move(5, 0, Move.Direction.RIGHT);
+        Move m = new Move(3, 0, Move.Direction.UP);
 
         update(m);
 
@@ -59,80 +43,27 @@ public class AIPlayer implements SliderPlayer, PieceMovement {
         System.out.println("Number of pieces: " + aiBoard.hashPieces.size());
     }
 
+    /**
+     *
+     * @param move A Move object representing the previous move made by the
+     * opponent, which may be null (indicating a pass). Also, before the first
+     * move at the beginning of the game, move = null.
+     * @throws InvalidMoveException
+     */
     @Override
     public void update(Move move) throws InvalidMoveException {
         if(move == null){
-            // Do Nothing?
+            // Do Nothing or something?
             return;
         }
 
-        SliderBoardPiece currentPiece = aiBoard.findPiece(move.i, move.j);
-        SliderBoardPiece futurePiece;
-
-        if(currentPiece == null){
-            // Moving a piece that doesn't exist
-            return;
-        }
-
-        // We check if we can move in the intended direction. There are only two cases possible:
-        // Either the future position is empty, or it is past the boundary where allowed as stated
-        // in the rules of the game for that particular piece type.
-        switch(move.d){
-            case UP:
-                if(!PieceMovement.canMoveUp(aiBoard, currentPiece)){
-
-                    throw new InvalidMoveException(currentPiece);
-
-                } else {
-                    futurePiece = PieceMovement.getPieceAbove(aiBoard, currentPiece);
-                }
-                break;
-
-            case DOWN:
-                if(!PieceMovement.canMoveDown(aiBoard, currentPiece)){
-
-                    throw new InvalidMoveException(currentPiece);
-                } else {
-                    futurePiece = PieceMovement.getPieceBelow(aiBoard, currentPiece);
-                }
-                break;
-
-            case LEFT:
-                if(!PieceMovement.canMoveLeft(aiBoard, currentPiece)){
-
-                    throw new InvalidMoveException(currentPiece);
-                } else {
-                    futurePiece = PieceMovement.getPieceLeft(aiBoard, currentPiece);
-                }
-                break;
-
-            case RIGHT:
-                if(!PieceMovement.canMoveRight(aiBoard, currentPiece)){
-
-                    throw new InvalidMoveException(currentPiece);
-                } else {
-                    futurePiece = PieceMovement.getPieceRight(aiBoard, currentPiece);
-                }
-                break;
-
-            default:
-                return;
-        }
-
-        // We check if the futurePiece is past the boundary
-        if(futurePiece.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
-            // TODO: Do our necessary score keeping here
-
-        } else {
-            //If it does not, the cell is empty, so we create a new key-value pair.
-            aiBoard.hashPieces.put(futurePiece.position, currentPiece);
-        }
-
-        // Now we remove the old "current" piece from the HashMap
-        aiBoard.hashPieces.remove(currentPiece.position, currentPiece);
-
+        aiBoard = SliderBoardMutator.mutateBoard(aiBoard, move);
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Move move() {
         return null;

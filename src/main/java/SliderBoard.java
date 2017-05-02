@@ -14,12 +14,42 @@ public class SliderBoard {
     public HashMap<Position, SliderBoardPiece> hashPieces;
 
 
-    public SliderBoard(int dimension) {
+    public SliderBoard(int dimension, String board) {
         this.dimension = dimension;
-
-        hashPieces = new HashMap<>();
+        this.hashPieces = new HashMap<>();
+        initialiseBoard(board);
     }
 
+    public SliderBoard(SliderBoard oldBoard){
+        this.dimension = oldBoard.dimension;
+        this.hashPieces = new HashMap<>();
+        this.hashPieces.putAll(oldBoard.hashPieces);
+    }
+
+    private void initialiseBoard(String board)
+    {
+    	char c;
+    	int row=0, col;
+    	SliderBoardPiece piece;
+    	
+    	for (int i=0; i<board.length(); i+=2)
+    	{
+    		col = (i/2) % dimension;
+    		c = board.charAt(i);
+    		
+    		// Only need to add non-empty pieces to the board.
+    		if (c != '+')
+    		{
+    			piece = new SliderBoardPiece(c, col, dimension-row-1);
+    			hashPieces.put(piece.position, piece);
+    		}
+    		
+    		// This was the last column in the row.
+    		if (col == dimension - 1)
+    			row++;
+    	}
+    	
+    }
 
     /**
      * Find the particular piece based on its location on the board

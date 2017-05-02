@@ -4,7 +4,7 @@
 public class BoundarySliderBoardPiece extends SliderBoardPiece {
 
     public BoundarySliderBoardPiece(int i, int j) {
-        super(i, j);
+        super(new SliderBoard.Position(i, j));
 
         type = PieceType.BOUNDARY;
     }

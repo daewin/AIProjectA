@@ -30,14 +30,14 @@ public interface PieceMovement {
     static boolean canMoveUp(SliderBoard board, SliderBoardPiece piece) throws InvalidMoveException {
 
         if(isInvalidPiece(piece)){
-            throw new InvalidMoveException(piece);
+            throw new InvalidMoveException(piece, "Trying to move a piece that is not H or V!");
         }
 
         // First we get the piece above our current piece
         SliderBoardPiece pieceAbove = getPieceAbove(board, piece);
 
-        if(pieceAbove.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
-            // The boundary has been reached;
+        if(pieceAbove != null && pieceAbove.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
+            // The boundary has been reached
             if(piece.type.equals(SliderBoardPiece.PieceType.H)){
                 // Since 'H' cannot move past the top boundary, we return false
                 return false;
@@ -66,13 +66,13 @@ public interface PieceMovement {
     static boolean canMoveDown(SliderBoard board, SliderBoardPiece piece) throws InvalidMoveException {
 
         if(isInvalidPiece(piece)){
-            throw new InvalidMoveException(piece);
+            throw new InvalidMoveException(piece, "Trying to move a piece that is not H or V!");
         }
 
         // First we get the piece below
         SliderBoardPiece pieceBelow = getPieceBelow(board, piece);
 
-        if(pieceBelow.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
+        if(pieceBelow != null && pieceBelow.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
             // The boundary has been reached
             if(piece.type.equals(SliderBoardPiece.PieceType.H)){
                 // Since 'H' cannot move past the bottom boundary, we return false
@@ -112,13 +112,13 @@ public interface PieceMovement {
     static boolean canMoveLeft(SliderBoard board, SliderBoardPiece piece) throws InvalidMoveException {
 
         if(isInvalidPiece(piece)){
-            throw new InvalidMoveException(piece);
+            throw new InvalidMoveException(piece, "Trying to move a piece that is not H or V!");
         }
 
         // First we get the piece to the left
         SliderBoardPiece pieceLeft = getPieceLeft(board, piece);
 
-        if(pieceLeft.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
+        if(pieceLeft != null && pieceLeft.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
             if(piece.type.equals(SliderBoardPiece.PieceType.H)){
                 // Since 'H' cannot move past the left boundary, we return false
                 return false;
@@ -158,13 +158,13 @@ public interface PieceMovement {
     static boolean canMoveRight(SliderBoard board, SliderBoardPiece piece) throws InvalidMoveException {
 
         if(isInvalidPiece(piece)){
-            throw new InvalidMoveException(piece);
+            throw new InvalidMoveException(piece, "Trying to move a piece that is not H or V!");
         }
 
         // First we get the piece to the right
         SliderBoardPiece pieceRight = getPieceRight(board, piece);
 
-        if(pieceRight.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
+        if(pieceRight != null && pieceRight.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
             // The boundary has been reached;
             if(piece.type.equals(SliderBoardPiece.PieceType.H)){
                 // Since 'H' can move past the right boundary, we return true

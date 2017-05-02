@@ -3,7 +3,16 @@
  */
 public class InvalidMoveException extends RuntimeException {
 
-    public InvalidMoveException(SliderBoardPiece s) {
-        super("Error! Invalid move for piece " + s + " at position (" + s.position.i + ", " + s.position.j + ")");
+    public InvalidMoveException(SliderBoardPiece s, String reason) {
+
+        super
+                ("\nError: Invalid move for piece " + s + " at position " +
+                        "(" + s.position.i + ", " + s.position.j + "). " + reason);
+
+    }
+
+    public InvalidMoveException(){
+
+        super("Error: Moving a piece that does not exist!");
     }
 }
