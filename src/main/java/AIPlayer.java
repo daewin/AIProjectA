@@ -8,7 +8,8 @@ public class AIPlayer implements SliderPlayer, PieceMovement {
 
     // Instance variables for our agent
     private SliderBoard aiBoard;
-    private char aiPlayerType;
+    private SliderBoardPiece.PieceType aiPlayerType;
+    private SearchStrategy currentStrategy;
 
     /**
      *
@@ -21,26 +22,17 @@ public class AIPlayer implements SliderPlayer, PieceMovement {
     public void init(int dimension, String board, char player) {
 
         // Set our players type
-        aiPlayerType = player;
+        if(player == 'H'){
+            aiPlayerType = SliderBoardPiece.PieceType.H;
+        } else {
+            aiPlayerType = SliderBoardPiece.PieceType.V;
+        }
+
 
         // Create and initialize a new board
         aiBoard = new SliderBoard(dimension, board);
 
-        World.printBoard(aiBoard, dimension);
-
-        System.out.println("Number of pieces: " + aiBoard.hashPieces.size());
-
-        // Lets move a piece
-        Move m = new Move(3, 0, Move.Direction.UP);
-
-        update(m);
-
-        System.out.println();
-        System.out.println("New Move: " + m);
-        System.out.println("New Board:");
-        World.printBoard(aiBoard, dimension);
-
-        System.out.println("Number of pieces: " + aiBoard.hashPieces.size());
+        System.out.println(move());
     }
 
     /**
@@ -53,7 +45,7 @@ public class AIPlayer implements SliderPlayer, PieceMovement {
     @Override
     public void update(Move move) throws InvalidMoveException {
         if(move == null){
-            // Do Nothing or something?
+            // TODO: Do Nothing or something?
             return;
         }
 
@@ -66,6 +58,13 @@ public class AIPlayer implements SliderPlayer, PieceMovement {
      */
     @Override
     public Move move() {
-        return null;
+
+        // We can first call an opponent analyser to see if our current strategy
+        // is the most optimal for them.
+        currentStrategy = new MinimaxSearchStrategy(aiPlayerType);
+
+        Move bestMove = currentStrategy.getBestMove(aiBoard);
+
+        return bestMove;
     }
 }

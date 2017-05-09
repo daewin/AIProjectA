@@ -16,9 +16,15 @@ public class World {
     /**
      * Print the board for visual aid
      * @param board     Board
-     * @param dimension Dimension of the board
      */
-    public static void printBoard(SliderBoard board, int dimension) {
+    public static void printBoard(SliderBoard board) {
+
+        if(board == null){
+            System.out.println("Error: Empty board!");
+        }
+
+        int dimension = board.dimension;
+
         for (int j = dimension - 1; j >= 0; j--) {
             for (int i = 0; i < dimension; i++) {
                 // Find for the piece at this location

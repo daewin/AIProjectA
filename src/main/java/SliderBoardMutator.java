@@ -1,5 +1,9 @@
 import aiproj.slider.Move;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Created by daewi on 0001, May, 1.
  */
@@ -8,15 +12,15 @@ public class SliderBoardMutator {
     public static SliderBoard mutateBoard(SliderBoard board, Move move){
 
         if(move == null){
-            // TODO: Do Nothing or something?
-            return null;
+            // We do nothing as this function merely mutates the board.
+            return board;
         }
 
         SliderBoard aiBoard = new SliderBoard(board);
+        SliderBoard.Position futurePosition;
 
         SliderBoardPiece currentPiece = aiBoard.findPiece(move.i, move.j);
         SliderBoardPiece futurePiece;
-        SliderBoard.Position futurePosition;
 
         if(currentPiece == null){
             // Moving a piece that doesn't exist
@@ -83,10 +87,10 @@ public class SliderBoardMutator {
 
         // We check if the futurePiece is past the boundary
         if(futurePiece != null && futurePiece.type.equals(SliderBoardPiece.PieceType.BOUNDARY)){
-            // TODO: Do our necessary score keeping here
+            // TODO: Do our necessary score keeping here. Also, remember to remove a piece from our collection too!
 
         } else {
-            //If it does not, the cell is empty, so we create a new key-value pair.
+            // If it does not, the cell is empty, so we create a new key-value pair.
             aiBoard.hashPieces.put(futurePosition, currentPiece);
         }
 

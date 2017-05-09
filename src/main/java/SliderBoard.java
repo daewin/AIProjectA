@@ -1,3 +1,5 @@
+import javafx.geometry.Pos;
+
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -21,9 +23,9 @@ public class SliderBoard {
     }
 
     public SliderBoard(SliderBoard oldBoard){
+        // To clone an old board, but with no common elements
         this.dimension = oldBoard.dimension;
-        this.hashPieces = new HashMap<>();
-        this.hashPieces.putAll(oldBoard.hashPieces);
+        this.hashPieces = deepCloneBoardHashMap(oldBoard);
     }
 
     private void initialiseBoard(String board)
@@ -71,6 +73,26 @@ public class SliderBoard {
     }
 
     /**
+     *
+     * @param oldBoard
+     * @return
+     */
+    private static HashMap<Position, SliderBoardPiece> deepCloneBoardHashMap(SliderBoard oldBoard){
+
+        HashMap<Position, SliderBoardPiece> newHashMap = new HashMap<>();
+
+        for(HashMap.Entry<Position, SliderBoardPiece> entry : oldBoard.hashPieces.entrySet()){
+
+            Position newPosition = new Position(entry.getKey());
+            SliderBoardPiece newPiece = new SliderBoardPiece(entry.getValue());
+
+            newHashMap.put(newPosition, newPiece);
+        }
+
+        return newHashMap;
+    }
+
+    /**
      * Generic position class for use on our Board
      */
     public static class Position {
@@ -81,6 +103,11 @@ public class SliderBoard {
         public Position(int i, int j){
             this.i = i;
             this.j = j;
+        }
+
+        public Position(Position oldPosition){
+            this.i = oldPosition.i;
+            this.j = oldPosition.j;
         }
 
         // Helper Functions

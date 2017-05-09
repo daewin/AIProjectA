@@ -28,7 +28,16 @@ public class SliderBoardPiece {
 
         this.position = new SliderBoard.Position(i, j);
     }
-    
+
+    public SliderBoardPiece(SliderBoardPiece oldPiece){
+        this.type = oldPiece.type;
+        this.position = oldPiece.position;
+    }
+
+    /**
+     * For use by the Boundary piece. Its type will be set there
+     * @param position
+     */
     public SliderBoardPiece(SliderBoard.Position position){ this.position = position; }
 
     /**
@@ -37,6 +46,20 @@ public class SliderBoardPiece {
      */
     public void setPosition(SliderBoard.Position position) {
         this.position = position;
+    }
+
+
+    /**
+     * Gives us the opponents piece type, in most use-cases
+     * @param type
+     * @return
+     */
+    public static PieceType oppositePieceType(PieceType type){
+        if(type.equals(PieceType.H)){
+            return PieceType.V;
+        } else {
+            return PieceType.H;
+        }
     }
 
     @Override

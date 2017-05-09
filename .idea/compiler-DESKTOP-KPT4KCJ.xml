@@ -9,7 +9,7 @@
         <module name="AIProjectA" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8">
+    <bytecodeTargetLevel>
       <module name="AIProjectA" target="1.8" />
     </bytecodeTargetLevel>
   </component>
