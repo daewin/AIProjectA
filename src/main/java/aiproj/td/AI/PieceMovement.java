@@ -1,3 +1,10 @@
+package aiproj.td.AI;
+
+import aiproj.td.InvalidMoveException;
+import aiproj.td.SliderBoard.BoundarySliderBoardPiece;
+import aiproj.td.SliderBoard.SliderBoard;
+import aiproj.td.SliderBoard.SliderBoardPiece;
+
 /**
  * COMP30024 Artificial Intelligence - Project A
  * By:              Daewin SV Lingam (dsv)

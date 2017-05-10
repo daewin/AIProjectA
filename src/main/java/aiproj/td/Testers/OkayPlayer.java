@@ -1,10 +1,18 @@
+package aiproj.td.Testers;
+
 import aiproj.slider.Move;
 import aiproj.slider.SliderPlayer;
+import aiproj.td.AI.PieceMovement;
+import aiproj.td.InvalidMoveException;
+import aiproj.td.SearchStrategy.SearchStrategy;
+import aiproj.td.SliderBoard.SliderBoard;
+import aiproj.td.SliderBoard.SliderBoardMutator;
+import aiproj.td.SliderBoard.SliderBoardPiece;
 
 /**
  * Created by daewin on 0021, April 21.
  */
-public class AIPlayer implements SliderPlayer, PieceMovement {
+public class OkayPlayer implements SliderPlayer, PieceMovement {
 
     // Instance variables for our agent
     private SliderBoard aiBoard;
@@ -32,7 +40,7 @@ public class AIPlayer implements SliderPlayer, PieceMovement {
         // Create and initialize a new board
         aiBoard = new SliderBoard(dimension, board);
 
-        System.out.println(move());
+       // System.out.println(move());
     }
 
     /**
@@ -61,9 +69,11 @@ public class AIPlayer implements SliderPlayer, PieceMovement {
 
         // We can first call an opponent analyser to see if our current strategy
         // is the most optimal for them.
-        currentStrategy = new MinimaxSearchStrategy(aiPlayerType);
+        currentStrategy = new OkaySearchStrategy(aiPlayerType);
 
         Move bestMove = currentStrategy.getBestMove(aiBoard);
+        
+        update(bestMove); // Update our own board with this move.
 
         return bestMove;
     }

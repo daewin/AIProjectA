@@ -1,13 +1,26 @@
+package aiproj.td.Feature;
+
+import aiproj.td.AI.PieceMovement;
+import aiproj.td.SearchStrategy.SearchStrategy;
+import aiproj.td.SliderBoard.SliderBoard;
+import aiproj.td.SliderBoard.SliderBoardPiece;
+
 /**
  * Created by daewin on 0004, May, 4.
  */
 public class MobilityWeightedFeature implements Feature, PieceMovement {
 
-    private int weight;
+    private float weight;
     public SliderBoardPiece.PieceType ourPlayerType;
 
     public MobilityWeightedFeature(SliderBoardPiece.PieceType playerType){
         this.ourPlayerType = playerType;
+        weight = 0.6f;
+    }
+
+    public MobilityWeightedFeature(SliderBoardPiece.PieceType playerType, float weight){
+        this.ourPlayerType = playerType;
+        this.weight = weight;
     }
 
 
@@ -19,16 +32,23 @@ public class MobilityWeightedFeature implements Feature, PieceMovement {
      * @return
      */
     @Override
-    public int evaluate(SliderBoard board) {
+    public float evaluate(SliderBoard board) {
 
         int ourMoves = SearchStrategy.getAllPossibleMoves(board, ourPlayerType).size();
         int opponentMoves = SearchStrategy.
                 getAllPossibleMoves(board, SliderBoardPiece.oppositePieceType(ourPlayerType)).size();
 
-        return ourMoves - opponentMoves;
+        // Normalize it
+        float normalizedEvaluationValue = (ourMoves - opponentMoves)/(float)(ourMoves+opponentMoves);
+
+        return normalizedEvaluationValue;
     }
 
-    public void setWeight(int weight) {
+    public void setWeight(float weight) {
         this.weight = weight;
+    }
+
+    public float getWeight() {
+        return weight;
     }
 }

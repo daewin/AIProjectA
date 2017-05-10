@@ -1,3 +1,5 @@
+package aiproj.td.SliderBoard;
+
 /**
  * COMP30024 Artificial Intelligence - Project A
  * By:              Daewin SV Lingam (dsv)

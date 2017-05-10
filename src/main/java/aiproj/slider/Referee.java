@@ -9,6 +9,9 @@
  */
 package aiproj.slider;
 
+import aiproj.td.AI.AIPlayer;
+import aiproj.td.Testers.RandomPlayer;
+
 /** 
  * Referee class: Driver for a game of Slider
  * Run this class on the command line using a command like:
@@ -42,15 +45,15 @@ public class Referee {
 		SliderPlayer[] players = new SliderPlayer[2];
 		try {
 			timer.start();
-			players[Player.H] = (SliderPlayer)options.playerH.newInstance();
+			players[Player.H] = new AIPlayer();
 			players[Player.H].init(options.dimension, board.toString(), 'H');
 			times[Player.H] += timer.clock();
 
 			timer.start();
-			players[Player.V] = (SliderPlayer)options.playerV.newInstance();
+			players[Player.V] = new RandomPlayer();
 			players[Player.V].init(options.dimension, board.toString(), 'V');
 			times[Player.V] += timer.clock();	
-		} catch (IllegalAccessException | InstantiationException e) {
+		} catch (Exception e) {
 			System.err.println("player instantiation error: " + e.getMessage());
 			System.exit(1);
 		}

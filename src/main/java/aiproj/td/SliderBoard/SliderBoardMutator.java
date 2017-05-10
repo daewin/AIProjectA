@@ -1,8 +1,9 @@
-import aiproj.slider.Move;
+package aiproj.td.SliderBoard;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import aiproj.slider.Move;
+import aiproj.td.AI.PieceMovement;
+import aiproj.td.InvalidMoveException;
+
 
 /**
  * Created by daewi on 0001, May, 1.

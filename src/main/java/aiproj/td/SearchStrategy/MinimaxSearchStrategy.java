@@ -1,4 +1,11 @@
+package aiproj.td.SearchStrategy;
+
 import aiproj.slider.Move;
+import aiproj.td.Feature.*;
+import aiproj.td.SliderBoard.SliderBoard;
+import aiproj.td.SliderBoard.SliderBoardMutator;
+import aiproj.td.SliderBoard.SliderBoardPiece;
+import aiproj.td.World;
 
 import java.util.ArrayList;
 
@@ -18,16 +25,18 @@ public class MinimaxSearchStrategy extends SearchStrategy {
         ourPlayerType = playerType;
         opponentPlayerType = SliderBoardPiece.oppositePieceType(playerType);
 
+        // Add our evaluation features
         evaluationFunction.add(new MobilityWeightedFeature(ourPlayerType));
+        //evaluationFunction.add(new BlockedPiecesFeature(ourPlayerType));
+        evaluationFunction.add(new NumPiecesFeature(ourPlayerType));
+        evaluationFunction.add(new MovesToWinFeature(ourPlayerType));
     }
 
 
     @Override
     public Move getBestMove(SliderBoard initialBoard) {
 
-        World.printBoard(initialBoard);
-
-        ComplexSearchObjectMaxi bestMove = maxi(initialBoard, 10);
+        ComplexSearchObjectMaxi bestMove = maxi(initialBoard, 5);
 
         if(bestMove != null){
             return bestMove.getMove();
@@ -46,7 +55,7 @@ public class MinimaxSearchStrategy extends SearchStrategy {
     private ComplexSearchObjectMaxi maxi(SliderBoard board, int level){
 
         if(level == 0){
-            int evaluationValue = getNormalizedEvaluation(board, evaluationFunction);
+            float evaluationValue = getNormalizedEvaluation(board, evaluationFunction);
             return new ComplexSearchObjectMaxi(evaluationValue);
         }
 
@@ -58,7 +67,7 @@ public class MinimaxSearchStrategy extends SearchStrategy {
 
             ComplexSearchObjectMini score = mini(mutatedBoard, level-1);
 
-            if(score.miniValue > max.maxiValue){
+            if(Float.compare(score.miniValue, max.maxiValue) > 0){
                 max.maxiValue = score.miniValue;
                 max.setMove(nextMove);
             }
@@ -76,7 +85,7 @@ public class MinimaxSearchStrategy extends SearchStrategy {
     private ComplexSearchObjectMini mini(SliderBoard board, int level){
 
         if(level == 0){
-            int evaluationValue = getNormalizedEvaluation(board, evaluationFunction);
+            float evaluationValue = getNormalizedEvaluation(board, evaluationFunction);
             return new ComplexSearchObjectMini(evaluationValue);
         }
 
@@ -88,7 +97,7 @@ public class MinimaxSearchStrategy extends SearchStrategy {
 
             ComplexSearchObjectMaxi score = maxi(mutatedBoard, level-1);
 
-            if(score.maxiValue < min.miniValue){
+            if(Float.compare(score.maxiValue, min.miniValue) < 0){
                 min.miniValue = score.maxiValue;
             }
         }
@@ -117,9 +126,9 @@ public class MinimaxSearchStrategy extends SearchStrategy {
 
 
     private class ComplexSearchObjectMini extends ComplexMinimaxSearchObject {
-        private int miniValue;
+        private float miniValue;
 
-        public ComplexSearchObjectMini(int miniValue){
+        public ComplexSearchObjectMini(float miniValue){
             super();
             this.miniValue = miniValue;
         }
@@ -127,9 +136,9 @@ public class MinimaxSearchStrategy extends SearchStrategy {
     }
 
     private class ComplexSearchObjectMaxi extends ComplexMinimaxSearchObject {
-        private int maxiValue;
+        private float maxiValue;
 
-        public ComplexSearchObjectMaxi(int maxValue){
+        public ComplexSearchObjectMaxi(float maxValue){
             super();
             this.maxiValue = maxValue;
         }

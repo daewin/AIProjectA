@@ -1,3 +1,9 @@
+package aiproj.td;
+
+import aiproj.td.AI.AIPlayer;
+import aiproj.td.SliderBoard.SliderBoard;
+import aiproj.td.SliderBoard.SliderBoardPiece;
+
 /**
  * COMP30024 Artificial Intelligence - Project A
  * By:              Daewin SV Lingam (dsv)

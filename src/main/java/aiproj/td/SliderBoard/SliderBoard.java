@@ -1,4 +1,4 @@
-import javafx.geometry.Pos;
+package aiproj.td.SliderBoard;
 
 import java.util.HashMap;
 import java.util.Objects;

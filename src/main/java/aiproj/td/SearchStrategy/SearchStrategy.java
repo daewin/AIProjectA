@@ -1,4 +1,11 @@
+package aiproj.td.SearchStrategy;
+
+
 import aiproj.slider.Move;
+import aiproj.td.AI.PieceMovement;
+import aiproj.td.Feature.Feature;
+import aiproj.td.SliderBoard.SliderBoard;
+import aiproj.td.SliderBoard.SliderBoardPiece;
 
 import java.util.ArrayList;
 
@@ -7,7 +14,7 @@ import java.util.ArrayList;
  */
 public abstract class SearchStrategy {
 
-    abstract Move getBestMove(SliderBoard board);
+    public abstract Move getBestMove(SliderBoard board);
 
     /**
      * Get a list of all possible moves that our player can make at this board state
@@ -67,12 +74,13 @@ public abstract class SearchStrategy {
      * @param board
      * @return
      */
-    public static int getNormalizedEvaluation(SliderBoard board, ArrayList<Feature> evaluationFunction){
+    public static float getNormalizedEvaluation(SliderBoard board, ArrayList<Feature> evaluationFunction){
 
-        int evaluationValue = 0;
+        float evaluationValue = 0.0f;
 
         for(Feature feature : evaluationFunction){
-            evaluationValue += feature.evaluate(board);
+
+            evaluationValue += feature.getWeight() * feature.evaluate(board);
         }
 
         return evaluationValue;

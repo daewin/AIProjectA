@@ -1,3 +1,7 @@
+package aiproj.td;
+
+import aiproj.td.SliderBoard.SliderBoardPiece;
+
 /**
  * Created by daewin on 0023, April, 23.
  */
